@@ -32,5 +32,7 @@ class AiCareerCodeApplicationTests {
 		assertEquals("jdbc:postgresql://dpg-dakin47qj5pc73baotrg-a:5432/aicareer_db", ds.getJdbcUrl());
 		assertEquals("aicareer_user", ds.getUsername());
 		ds.close();
+
+		assertDoesNotThrow(() -> Class.forName("org.hibernate.dialect.PostgreSQLDialect"));
 	}
 }

@@ -7,6 +7,8 @@ services:
     dockerContext: backend
     plan: free
     region: singapore
+    branch: main
+    autoDeploy: true
     envVars:
       - key: GEMINI_API_KEY
         sync: false
@@ -16,6 +18,10 @@ services:
         fromDatabase:
           name: aicareer-db
           property: connectionString
+      - key: DATABASE_DRIVER
+        value: org.postgresql.Driver
+      - key: SPRING_JPA_DATABASE_PLATFORM
+        value: org.hibernate.dialect.PostgreSQLDialect
 
   # React Vite Frontend Static Site
   - type: web
@@ -24,6 +30,8 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
+    branch: main
+    autoDeploy: true
     routes:
       - type: rewrite
         source: /api/*

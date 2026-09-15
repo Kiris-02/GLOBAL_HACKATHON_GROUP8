@@ -48,6 +48,8 @@ public class DatabaseConfig {
                 ds.setJdbcUrl(jdbcUrl);
                 ds.setDriverClassName("org.postgresql.Driver");
                 System.setProperty("jakarta.persistence.jdbc.url", jdbcUrl);
+                System.setProperty("spring.jpa.database-platform", "org.hibernate.dialect.PostgreSQLDialect");
+                System.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
                 if (uri.getUserInfo() != null) {
                     String[] parts = uri.getUserInfo().split(":");
@@ -67,6 +69,8 @@ public class DatabaseConfig {
             ds.setJdbcUrl(dbUrl);
             ds.setDriverClassName("org.postgresql.Driver");
             System.setProperty("jakarta.persistence.jdbc.url", dbUrl);
+            System.setProperty("spring.jpa.database-platform", "org.hibernate.dialect.PostgreSQLDialect");
+            System.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
             if (defaultUsername != null && !defaultUsername.isBlank()) ds.setUsername(defaultUsername);
             if (defaultPassword != null && !defaultPassword.isBlank()) ds.setPassword(defaultPassword);
             return ds;

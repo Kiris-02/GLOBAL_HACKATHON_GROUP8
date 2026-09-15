@@ -10,6 +10,7 @@ spring:
     password: ${DATABASE_PASSWORD:${SPRING_DATASOURCE_PASSWORD:rootpassword}}
     driver-class-name: ${DATABASE_DRIVER:${SPRING_DATASOURCE_DRIVER_CLASS_NAME:}}
   jpa:
+    database-platform: ${SPRING_JPA_DATABASE_PLATFORM:}
     hibernate:
       ddl-auto: update
     show-sql: false

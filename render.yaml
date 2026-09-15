@@ -38,10 +38,7 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_BASE
-        fromService:
-          type: web
-          name: aicareer-backend
-          property: host
+        value: https://aicareer-backend-c0e3.onrender.com/api
 
 databases:
   - name: aicareer-db

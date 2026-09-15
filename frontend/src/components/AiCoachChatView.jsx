@@ -18,6 +18,17 @@ export default function AiCoachChatView({ profile }) {
   };
 
   useEffect(() => {
+    if (messages.length <= 1) {
+      setMessages([
+        {
+          role: 'assistant',
+          content: `Hello ${profile?.fullName || 'there'}! I am your **AI Career Coach** powered by Google Gemini 3.5 Flash. 🚀\n\nI am currently analyzing your profile as **${profile?.currentTitle || 'Tech Professional'}** (${profile?.yearsOfExperience || 0} years of experience, core stack: ${(profile?.skills || []).slice(0, 5).join(', ')}).\n\nI am here to assist you with:\n- 🌏 **Global Career Transition & Job Search** (Singapore, Europe, Japan, US, Worldwide Remote).\n- 🛂 **Visa Sponsorship & Eligibility Insights** for software and tech engineers.\n- 📝 **ATS Resume Tailoring** and rewriting achievements using the STAR methodology.\n- 🎤 **Mock Interviews** (Behavioral scenarios & System Design architecture).\n\nWhat career goal or question would you like to explore today?`,
+        },
+      ]);
+    }
+  }, [profile?.fullName, profile?.currentTitle, profile?.updatedAt]);
+
+  useEffect(() => {
     scrollToBottom();
   }, [messages, loading]);
 

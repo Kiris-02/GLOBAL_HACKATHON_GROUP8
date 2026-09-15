@@ -3,9 +3,11 @@ package com.gbhackathon.AICareerCode.service;
 import com.gbhackathon.AICareerCode.dto.ProfileDto;
 import com.gbhackathon.AICareerCode.model.UserProfile;
 import com.gbhackathon.AICareerCode.repository.UserProfileRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,10 +28,19 @@ public class ProfileService {
         return profileRepository.findById(id);
     }
 
+    @Transactional
     public UserProfile getCurrentOrCreateProfile() {
-        List<UserProfile> list = profileRepository.findAll();
+        List<UserProfile> list = profileRepository.findAll(Sort.by(Sort.Direction.DESC, "updatedAt", "id"));
         if (!list.isEmpty()) {
-            return list.get(0);
+            UserProfile latest = list.get(0);
+            if (list.size() > 1) {
+                for (int i = 1; i < list.size(); i++) {
+                    try {
+                        profileRepository.delete(list.get(i));
+                    } catch (Exception ignored) {}
+                }
+            }
+            return latest;
         }
         // Create a default initial profile
         UserProfile p = new UserProfile();
@@ -46,18 +57,14 @@ public class ProfileService {
         p.setWillingToRelocate(true);
         p.setTargetWorkType("ANY");
         p.setBio("3 năm kinh nghiệm phát triển hệ thống backend phân tán xử lý hàng triệu transaction. Đam mê học hỏi công nghệ mới, hướng đến việc làm việc tại môi trường công nghệ quốc tế hoặc công ty Product hàng đầu.");
+        p.setCreatedAt(LocalDateTime.now());
+        p.setUpdatedAt(LocalDateTime.now());
         return profileRepository.save(p);
     }
 
     @Transactional
     public UserProfile saveOrUpdateProfile(ProfileDto dto) {
-        UserProfile profile;
-        if (dto.getId() != null) {
-            profile = profileRepository.findById(dto.getId()).orElse(new UserProfile());
-        } else {
-            List<UserProfile> list = profileRepository.findAll();
-            profile = list.isEmpty() ? new UserProfile() : list.get(0);
-        }
+        UserProfile profile = getCurrentOrCreateProfile();
 
         if (dto.getFullName() != null) profile.setFullName(dto.getFullName());
         if (dto.getEmail() != null) profile.setEmail(dto.getEmail());
@@ -73,6 +80,7 @@ public class ProfileService {
         if (dto.getWillingToRelocate() != null) profile.setWillingToRelocate(dto.getWillingToRelocate());
         if (dto.getTargetWorkType() != null) profile.setTargetWorkType(dto.getTargetWorkType());
         if (dto.getRawCvText() != null) profile.setRawCvText(dto.getRawCvText());
+        profile.setUpdatedAt(LocalDateTime.now());
 
         return profileRepository.save(profile);
     }

@@ -24,13 +24,13 @@ export default function ResumeAuditView({ profile }) {
 
   useEffect(() => {
     loadAudit();
-  }, []);
+  }, [profile?.fullName, profile?.currentTitle, profile?.updatedAt]);
 
   if (loading) {
     return (
       <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-secondary)' }}>
         <Sparkles className="animate-spin" size={32} style={{ margin: '0 auto 1rem', display: 'block', color: 'var(--accent-primary)' }} />
-        AI is evaluating your resume health and analyzing ATS keyword density...
+        AI is evaluating resume health for <strong>{profile?.fullName || 'candidate'}</strong> and analyzing ATS keyword density...
       </div>
     );
   }
@@ -54,11 +54,11 @@ export default function ResumeAuditView({ profile }) {
         <div className="page-header-text">
           <h1>Resume Audit & Career Progression Roadmap</h1>
           <p>
-            In-depth evaluation based on global ATS standards, STAR-formula experience rewrites with metrics, and an actionable 12-month career progression roadmap.
+            Candidate: <strong style={{ color: '#fff' }}>{profile?.fullName || 'Current Profile'}</strong> ({profile?.currentTitle || 'Software Engineer'}) • Evaluated via global ATS standards & Gemini 3.5 Flash.
           </p>
         </div>
-        <button className="btn btn-secondary btn-sm" onClick={loadAudit}>
-          <RefreshCw size={14} /> Re-Scan Profile
+        <button className="btn btn-primary btn-sm" onClick={loadAudit} disabled={loading}>
+          <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> {loading ? 'Analyzing...' : 'Re-Scan Current Profile'}
         </button>
       </div>
 

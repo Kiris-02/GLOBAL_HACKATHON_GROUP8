@@ -1,0 +1,27 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: AICareerCode
+  datasource:
+    url: ${DATABASE_URL:${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3308/aicareer_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}}
+    username: ${DATABASE_USERNAME:${SPRING_DATASOURCE_USERNAME:root}}
+    password: ${DATABASE_PASSWORD:${SPRING_DATASOURCE_PASSWORD:rootpassword}}
+    driver-class-name: ${DATABASE_DRIVER:${SPRING_DATASOURCE_DRIVER_CLASS_NAME:com.mysql.cj.jdbc.Driver}}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+ai:
+  gemini:
+    api-key: ${GEMINI_API_KEY:YOUR_GEMINI_API_KEY}
+    model: ${GEMINI_MODEL:gemini-3.5-flash}

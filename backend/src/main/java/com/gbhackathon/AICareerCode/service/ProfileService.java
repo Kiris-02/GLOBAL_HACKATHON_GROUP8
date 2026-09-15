@@ -1,0 +1,100 @@
+package com.gbhackathon.AICareerCode.service;
+
+import com.gbhackathon.AICareerCode.dto.ProfileDto;
+import com.gbhackathon.AICareerCode.model.UserProfile;
+import com.gbhackathon.AICareerCode.repository.UserProfileRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class ProfileService {
+
+    private final UserProfileRepository profileRepository;
+
+    public ProfileService(UserProfileRepository profileRepository) {
+        this.profileRepository = profileRepository;
+    }
+
+    public List<UserProfile> getAllProfiles() {
+        return profileRepository.findAll();
+    }
+
+    public Optional<UserProfile> getProfileById(Long id) {
+        return profileRepository.findById(id);
+    }
+
+    public UserProfile getCurrentOrCreateProfile() {
+        List<UserProfile> list = profileRepository.findAll();
+        if (!list.isEmpty()) {
+            return list.get(0);
+        }
+        // Create a default initial profile
+        UserProfile p = new UserProfile();
+        p.setFullName("Nguyễn Văn A");
+        p.setEmail("nguyenvana.tech@example.com");
+        p.setPhone("+84 912 345 678");
+        p.setCurrentTitle("Backend Engineer (Java / Spring)");
+        p.setYearsOfExperience(3.0);
+        p.setEducation("Cử nhân Khoa học Máy tính - ĐH Bách Khoa");
+        p.setLanguages("Tiếng Việt (Bản ngữ), Tiếng Anh (IELTS 7.0 - Giao tiếp công việc tốt)");
+        p.setSkills("Java, Spring Boot, MySQL, Docker, Redis, RESTful API, Microservices, Git, AWS");
+        p.setTargetRoles("Senior Backend Engineer, Cloud Specialist");
+        p.setTargetLocations("Việt Nam, Singapore, Remote Toàn cầu, Đức");
+        p.setWillingToRelocate(true);
+        p.setTargetWorkType("ANY");
+        p.setBio("3 năm kinh nghiệm phát triển hệ thống backend phân tán xử lý hàng triệu transaction. Đam mê học hỏi công nghệ mới, hướng đến việc làm việc tại môi trường công nghệ quốc tế hoặc công ty Product hàng đầu.");
+        return profileRepository.save(p);
+    }
+
+    @Transactional
+    public UserProfile saveOrUpdateProfile(ProfileDto dto) {
+        UserProfile profile;
+        if (dto.getId() != null) {
+            profile = profileRepository.findById(dto.getId()).orElse(new UserProfile());
+        } else {
+            List<UserProfile> list = profileRepository.findAll();
+            profile = list.isEmpty() ? new UserProfile() : list.get(0);
+        }
+
+        if (dto.getFullName() != null) profile.setFullName(dto.getFullName());
+        if (dto.getEmail() != null) profile.setEmail(dto.getEmail());
+        if (dto.getPhone() != null) profile.setPhone(dto.getPhone());
+        if (dto.getCurrentTitle() != null) profile.setCurrentTitle(dto.getCurrentTitle());
+        if (dto.getYearsOfExperience() != null) profile.setYearsOfExperience(dto.getYearsOfExperience());
+        if (dto.getBio() != null) profile.setBio(dto.getBio());
+        if (dto.getEducation() != null) profile.setEducation(dto.getEducation());
+        if (dto.getLanguages() != null) profile.setLanguages(dto.getLanguages());
+        if (dto.getSkills() != null) profile.setSkillList(dto.getSkills());
+        if (dto.getTargetRoles() != null) profile.setTargetRoles(String.join(", ", dto.getTargetRoles()));
+        if (dto.getTargetLocations() != null) profile.setTargetLocations(String.join(", ", dto.getTargetLocations()));
+        if (dto.getWillingToRelocate() != null) profile.setWillingToRelocate(dto.getWillingToRelocate());
+        if (dto.getTargetWorkType() != null) profile.setTargetWorkType(dto.getTargetWorkType());
+        if (dto.getRawCvText() != null) profile.setRawCvText(dto.getRawCvText());
+
+        return profileRepository.save(profile);
+    }
+
+    public ProfileDto toDto(UserProfile entity) {
+        ProfileDto dto = new ProfileDto();
+        dto.setId(entity.getId());
+        dto.setFullName(entity.getFullName());
+        dto.setEmail(entity.getEmail());
+        dto.setPhone(entity.getPhone());
+        dto.setCurrentTitle(entity.getCurrentTitle());
+        dto.setYearsOfExperience(entity.getYearsOfExperience());
+        dto.setBio(entity.getBio());
+        dto.setSkills(entity.getSkillList());
+        dto.setEducation(entity.getEducation());
+        dto.setLanguages(entity.getLanguages());
+        dto.setTargetRoles(entity.getTargetRoleList());
+        dto.setTargetLocations(entity.getTargetLocationList());
+        dto.setWillingToRelocate(entity.getWillingToRelocate());
+        dto.setTargetWorkType(entity.getTargetWorkType());
+        dto.setRawCvText(entity.getRawCvText());
+        dto.setUpdatedAt(entity.getUpdatedAt());
+        return dto;
+    }
+}

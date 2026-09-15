@@ -5,7 +5,7 @@ spring:
   application:
     name: AICareerCode
   datasource:
-    url: ${DATABASE_URL:${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3308/aicareer_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3308/aicareer_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
     username: ${DATABASE_USERNAME:${SPRING_DATASOURCE_USERNAME:root}}
     password: ${DATABASE_PASSWORD:${SPRING_DATASOURCE_PASSWORD:rootpassword}}
     driver-class-name: ${DATABASE_DRIVER:${SPRING_DATASOURCE_DRIVER_CLASS_NAME:}}

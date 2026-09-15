@@ -47,6 +47,7 @@ public class DatabaseConfig {
 
                 ds.setJdbcUrl(jdbcUrl);
                 ds.setDriverClassName("org.postgresql.Driver");
+                System.setProperty("jakarta.persistence.jdbc.url", jdbcUrl);
 
                 if (uri.getUserInfo() != null) {
                     String[] parts = uri.getUserInfo().split(":");
@@ -65,6 +66,7 @@ public class DatabaseConfig {
         if (dbUrl != null && dbUrl.startsWith("jdbc:postgresql:")) {
             ds.setJdbcUrl(dbUrl);
             ds.setDriverClassName("org.postgresql.Driver");
+            System.setProperty("jakarta.persistence.jdbc.url", dbUrl);
             if (defaultUsername != null && !defaultUsername.isBlank()) ds.setUsername(defaultUsername);
             if (defaultPassword != null && !defaultPassword.isBlank()) ds.setPassword(defaultPassword);
             return ds;

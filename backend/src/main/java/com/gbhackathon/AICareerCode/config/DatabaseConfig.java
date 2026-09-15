@@ -16,7 +16,7 @@ public class DatabaseConfig {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseConfig.class);
 
-    @Value("${spring.datasource.url:${DATABASE_URL:}}")
+    @Value("${DATABASE_URL:${spring.datasource.url:}}")
     private String dbUrl;
 
     @Value("${spring.datasource.username:${DATABASE_USERNAME:}}")
@@ -32,6 +32,8 @@ public class DatabaseConfig {
     @Primary
     public DataSource dataSource() {
         HikariDataSource ds = new HikariDataSource();
+        ds.setConnectionTimeout(30000);
+        ds.setMaximumPoolSize(5);
 
         if (dbUrl != null && (dbUrl.startsWith("postgres://") || dbUrl.startsWith("postgresql://"))) {
             try {
@@ -40,7 +42,8 @@ public class DatabaseConfig {
                 String host = uri.getHost();
                 int port = uri.getPort() == -1 ? 5432 : uri.getPort();
                 String path = uri.getPath();
-                String jdbcUrl = "jdbc:postgresql://" + host + ":" + port + path;
+                String query = uri.getQuery();
+                String jdbcUrl = "jdbc:postgresql://" + host + ":" + port + path + (query != null && !query.isBlank() ? "?" + query : "");
 
                 ds.setJdbcUrl(jdbcUrl);
                 ds.setDriverClassName("org.postgresql.Driver");
@@ -59,11 +62,23 @@ public class DatabaseConfig {
             }
         }
 
-        // Standard JDBC URL (MySQL or pre-formatted JDBC)
+        if (dbUrl != null && dbUrl.startsWith("jdbc:postgresql:")) {
+            ds.setJdbcUrl(dbUrl);
+            ds.setDriverClassName("org.postgresql.Driver");
+            if (defaultUsername != null && !defaultUsername.isBlank()) ds.setUsername(defaultUsername);
+            if (defaultPassword != null && !defaultPassword.isBlank()) ds.setPassword(defaultPassword);
+            return ds;
+        }
+
+        // Standard JDBC URL (MySQL or local fallback)
         ds.setJdbcUrl(dbUrl);
         if (defaultUsername != null && !defaultUsername.isBlank()) ds.setUsername(defaultUsername);
         if (defaultPassword != null && !defaultPassword.isBlank()) ds.setPassword(defaultPassword);
-        if (defaultDriver != null && !defaultDriver.isBlank()) ds.setDriverClassName(defaultDriver);
+        if (defaultDriver != null && !defaultDriver.isBlank()) {
+            ds.setDriverClassName(defaultDriver);
+        } else if (dbUrl != null && dbUrl.startsWith("jdbc:mysql:")) {
+            ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        }
         return ds;
     }
 }

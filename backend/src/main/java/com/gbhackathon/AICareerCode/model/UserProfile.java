@@ -41,7 +41,7 @@ public class UserProfile {
     private Boolean willingToRelocate = false;
     private String targetWorkType = "ANY"; // ANY, REMOTE, HYBRID, ONSITE
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String rawCvText;
 
     private LocalDateTime createdAt;

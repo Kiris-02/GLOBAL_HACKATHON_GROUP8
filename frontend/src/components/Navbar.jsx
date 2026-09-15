@@ -1,7 +1,7 @@
 import React from 'react';
 import { Sparkles, User, Briefcase, Award, MessageSquare } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab }) {
+export default function Navbar({ activeTab, setActiveTab, isConnected }) {
   const tabs = [
     { id: 'profile', label: 'Profile & Resume', icon: User },
     { id: 'matching', label: 'Job Matching', icon: Briefcase },
@@ -42,9 +42,9 @@ export default function Navbar({ activeTab, setActiveTab }) {
         })}
       </nav>
 
-      <div className="system-status">
-        <span className="status-dot"></span>
-        <span>Gemini AI & DB Connected</span>
+      <div className="system-status" style={{ borderColor: isConnected ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)' }}>
+        <span className="status-dot" style={{ background: isConnected ? '#10b981' : '#f59e0b', boxShadow: isConnected ? '0 0 8px #10b981' : '0 0 8px #f59e0b' }}></span>
+        <span style={{ color: isConnected ? '#10b981' : '#f59e0b' }}>{isConnected ? 'Gemini AI & DB Connected' : 'Offline Preview Mode'}</span>
       </div>
     </header>
   );

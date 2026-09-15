@@ -3,7 +3,7 @@ import {
   UploadCloud, FileText, CheckCircle2, User, Globe, 
   MapPin, Plus, X, Save, ArrowRight, Loader2 
 } from 'lucide-react';
-import { saveProfile, uploadCvFile, resetSampleProfile } from '../api';
+import { saveProfile, uploadCvFile, resetSampleProfile, DEFAULT_PROFILE } from '../api';
 
 export default function ProfileView({ profile, setProfile, onGoToMatching, showToast }) {
   const [loading, setLoading] = useState(false);
@@ -103,7 +103,19 @@ export default function ProfileView({ profile, setProfile, onGoToMatching, showT
   };
 
   if (!profile) {
-    return <div style={{ textAlign: 'center', padding: '3rem' }}>Loading profile information...</div>;
+    return (
+      <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+        <Loader2 className="spinner" size={28} style={{ margin: '0 auto 1rem', display: 'block', animation: 'spin 1s linear infinite' }} />
+        <p>Loading profile information...</p>
+        <button
+          className="btn btn-secondary btn-sm"
+          style={{ marginTop: '1rem' }}
+          onClick={() => setProfile(DEFAULT_PROFILE)}
+        >
+          Load Default Profile Now
+        </button>
+      </div>
+    );
   }
 
   return (

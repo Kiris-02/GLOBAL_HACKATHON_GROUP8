@@ -34,14 +34,14 @@ services:
     autoDeploy: true
     routes:
       - type: rewrite
-        source: /api/*
-        destination: https://aicareer-backend.onrender.com/api/*
-      - type: rewrite
         source: /*
         destination: /index.html
     envVars:
       - key: VITE_API_BASE
-        value: https://aicareer-backend.onrender.com/api
+        fromService:
+          type: web
+          name: aicareer-backend
+          property: host
 
 databases:
   - name: aicareer-db

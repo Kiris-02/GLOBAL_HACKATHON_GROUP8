@@ -1,4 +1,16 @@
-const API_BASE = import.meta.env.VITE_API_BASE || '/api';
+let rawBase = import.meta.env.VITE_API_BASE || '';
+if (!rawBase || rawBase === '/api') {
+  rawBase = '/api';
+} else {
+  if (!rawBase.startsWith('http://') && !rawBase.startsWith('https://')) {
+    rawBase = 'https://' + rawBase;
+  }
+  rawBase = rawBase.replace(/\/+$/, '');
+  if (!rawBase.endsWith('/api')) {
+    rawBase = rawBase + '/api';
+  }
+}
+const API_BASE = rawBase;
 
 export async function fetchCurrentProfile() {
   const res = await fetch(`${API_BASE}/profiles/current`);

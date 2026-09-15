@@ -27,9 +27,29 @@ public class JobService {
     }
 
     public List<JobOpportunity> searchJobs(String keyword, Boolean isOverseas, String workType, Boolean visaSponsorship) {
-        String cleanKeyword = (keyword != null && !keyword.isBlank()) ? keyword.trim() : null;
+        String cleanKeyword = (keyword != null && !keyword.isBlank()) ? keyword.trim().toLowerCase() : null;
         String cleanWorkType = (workType != null && !workType.isBlank() && !workType.equalsIgnoreCase("ALL")) ? workType : null;
-        return jobRepository.searchJobs(cleanKeyword, isOverseas, cleanWorkType, visaSponsorship);
+
+        return jobRepository.findAll().stream()
+                .filter(j -> {
+                    if (cleanKeyword != null) {
+                        boolean matchTitle = j.getTitle() != null && j.getTitle().toLowerCase().contains(cleanKeyword);
+                        boolean matchCompany = j.getCompany() != null && j.getCompany().toLowerCase().contains(cleanKeyword);
+                        boolean matchSkills = j.getRequiredSkills() != null && j.getRequiredSkills().toLowerCase().contains(cleanKeyword);
+                        if (!matchTitle && !matchCompany && !matchSkills) return false;
+                    }
+                    if (isOverseas != null && !Boolean.valueOf(Boolean.TRUE.equals(j.getIsOverseas())).equals(isOverseas)) {
+                        return false;
+                    }
+                    if (cleanWorkType != null && (j.getWorkType() == null || !j.getWorkType().equalsIgnoreCase(cleanWorkType))) {
+                        return false;
+                    }
+                    if (visaSponsorship != null && !Boolean.valueOf(Boolean.TRUE.equals(j.getVisaSponsorship())).equals(visaSponsorship)) {
+                        return false;
+                    }
+                    return true;
+                })
+                .collect(Collectors.toList());
     }
 
     public JobDto toDto(JobOpportunity job) {
